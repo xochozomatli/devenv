@@ -1,0 +1,42 @@
+#!/bin/bash
+
+WORKSPACES=./devenv.workspaces
+
+if [[ $# -gt 0 ]]
+then
+	WORKSPACE=$(sed -n "s/^\($1\)=\(.\+\)/\2/p" $WORKSPACES)
+
+	if [[ $WORKSPACE = "" ]]
+	then
+		WORKSPACE=$(find $HOME -type d -name $1)
+	fi
+
+	cd $WORKSPACE
+fi
+
+
+SESSION=$(pwd | sed -n 's/.*\/\([^\/]\+\)$/\1/p')
+SESSIONEXISTS=$(tmux ls | grep $SESSION)
+
+
+if [ "$SESSIONEXISTS" = "" ]
+then
+	tmux new-session -d -s $SESSION -x "$(tput cols)" -y "$(tput lines)"
+
+	tmux splitw -vp 25 
+ 	tmux splitw -hp 40
+
+ 	ISVENV=$(ls | grep venv)
+ 	if [ ISVENV  != "" ]
+ 	then
+ 		tmux send-keys -t 0 'source venv/bin/activate' C-m 'vim' C-m
+ 		tmux send-keys -t 1 'source venv/bin/activate' C-m 'clear' C-m
+ 		tmux send-keys -t 2 'source venv/bin/activate' C-m 'clear' C-m #'python manage.py runserver' C-m
+ 	fi
+
+	tmux selectp -t 1
+	tmux selectp -t 0
+	tmux send-keys -t 0 C-h
+fi
+
+tmux attach-session -t $SESSION

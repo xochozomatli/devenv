@@ -1,0 +1,3 @@
+###This file is for telling devenv where to find your project folders
+### example:
+### nodeproject=~/Documents/code/node/nodeproject
