@@ -1,10 +1,10 @@
 #!/bin/bash
 
-WORKSPACES=./devenv.workspaces
+WORKSPACES=$HOME/bin/devenv.workspaces
 
 if [[ $# -gt 0 ]]
 then
-	WORKSPACE=$(sed -n "s/^\($1\)=\(.\+\)/\2/p" $WORKSPACES)
+	eval WORKSPACE=$(sed -n "s/^\($1\)=\(.\+\)/\2/p" $WORKSPACES)
 
 	if [[ $WORKSPACE = "" ]]
 	then
